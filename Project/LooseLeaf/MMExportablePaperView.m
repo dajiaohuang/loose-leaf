@@ -284,6 +284,8 @@
             [updatedScrapPlist writeToFile:locationOfUpdatedScrapInfo atomically:YES];
         }
 
+        NSUInteger totalFiles = [directoryContents count] + [bundledContents count];
+
         ZipArchive* zip = [[ZipArchive alloc] init];
         if ([zip createZipFileAt:fullPathToTempZip]) {
             for (int filesSoFar = 0; filesSoFar < [directoryContents count]; filesSoFar++) {
@@ -297,7 +299,7 @@
                 } else {
                     DebugLog(@"error for path: %@", aFileInPage);
                 }
-                CGFloat percentSoFar = ((CGFloat)filesSoFar / ([directoryContents count] + [bundledContents count]));
+                CGFloat percentSoFar = ((CGFloat)(filesSoFar + 1) / totalFiles);
                 [self.delegate isExportingPage:self withPercentage:percentSoFar toZipLocation:fullPathToZip];
             }
             for (int filesSoFar = 0; filesSoFar < [bundledContents count]; filesSoFar++) {
@@ -311,7 +313,7 @@
                 } else {
                     DebugLog(@"error for path: %@", aFileInPage);
                 }
-                CGFloat percentSoFar = ((CGFloat)filesSoFar / ([directoryContents count] + [bundledContents count]));
+                CGFloat percentSoFar = ((CGFloat)([directoryContents count] + filesSoFar + 1) / totalFiles);
                 [self.delegate isExportingPage:self withPercentage:percentSoFar toZipLocation:fullPathToZip];
             }
             if ([directoryContents count] + [bundledContents count] == 0) {
@@ -320,6 +322,7 @@
                 NSString* emptyFilename = [NSTemporaryDirectory() stringByAppendingPathComponent:@"empty"];
                 [@"" writeToFile:emptyFilename atomically:YES encoding:NSUTF8StringEncoding error:nil];
                 [zip addFileToZip:emptyFilename toPathInZip:@"empty"];
+                [self.delegate isExportingPage:self withPercentage:1.0 toZipLocation:fullPathToZip];
             }
             [zip closeZipFile];
         }
