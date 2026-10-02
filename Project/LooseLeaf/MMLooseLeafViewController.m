@@ -1798,11 +1798,12 @@
                               errorHandler:nil];
 
         NSMutableArray<NSURL*>* filesToDelete = [NSMutableArray array];
+        NSDate* cutoffDate = [NSDate dateWithTimeIntervalSinceNow:-60 * 15];
         for (NSURL* fileURL in directoryEnumerator) {
             NSDate* createdDate = nil;
-            [fileURL getResourceValue:&createdDate forKey:NSURLCreationDateKey error:nil];
+            BOOL hasCreatedDate = [fileURL getResourceValue:&createdDate forKey:NSURLCreationDateKey error:nil];
 
-            if ([createdDate earlierDate:[NSDate dateWithTimeIntervalSinceNow:-60 * 15]] == createdDate) {
+            if (hasCreatedDate && createdDate && [createdDate earlierDate:cutoffDate] == createdDate) {
                 // if the file was created more than 15 minutes ago, then delete it
                 [filesToDelete addObject:fileURL];
             }
