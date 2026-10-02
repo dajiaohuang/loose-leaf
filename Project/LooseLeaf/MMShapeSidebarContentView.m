@@ -29,6 +29,18 @@
 #import "NSArray+MapReduce.h"
 
 
+@interface MMShapePhotosListLayout : MMPhotosListLayout
+@end
+
+@implementation MMShapePhotosListLayout
+
+- (BOOL)hasPermission {
+    return YES;
+}
+
+@end
+
+
 @interface MMShapeSidebarContentView (Protected)
 
 - (CGFloat)idealRotationForOrientation;
@@ -138,7 +150,7 @@
 }
 
 - (UICollectionViewLayout*)photosLayout {
-    return [[MMPhotosListLayout alloc] initForRotation:[self idealRotationForOrientation]];
+    return [[MMShapePhotosListLayout alloc] initForRotation:[self idealRotationForOrientation]];
 }
 
 - (void)updateEmptyErrorMessage {
