@@ -35,6 +35,7 @@ typedef struct RowOfViewsInSidebar {
     UILabel* deleteCountLabel;
 
     int countOfStoredRowData;
+    int capacityOfStoredRowData;
     RowOfViewsInSidebar* rowData;
 }
 
@@ -185,13 +186,14 @@ typedef struct RowOfViewsInSidebar {
     CGFloat maxDimOfView = (self.bounds.size.width - kColumnSideMargin) / self.columnCount;
 
     // make sure we have data to store the attributes per row
-    if (rowCount > countOfStoredRowData) {
+    if (rowCount > capacityOfStoredRowData) {
         if (rowData) {
             free(rowData);
         }
-        countOfStoredRowData = rowCount;
-        rowData = malloc(countOfStoredRowData * sizeof(RowOfViewsInSidebar));
+        capacityOfStoredRowData = rowCount;
+        rowData = malloc(capacityOfStoredRowData * sizeof(RowOfViewsInSidebar));
     }
+    countOfStoredRowData = rowCount;
 
     // calculate the height we'll need for each
     // scrap in the sidebar as we scroll
@@ -324,7 +326,7 @@ typedef struct RowOfViewsInSidebar {
 #pragma mark - Private
 
 - (CGFloat)contentHeight {
-    if (rowData) {
+    if (rowData && countOfStoredRowData > 0) {
         RowOfViewsInSidebar lastRow = rowData[countOfStoredRowData - 1];
         return lastRow.topY + lastRow.height + 4 * kColumnTopMargin + 100; // add 100 for our trash button
     }
