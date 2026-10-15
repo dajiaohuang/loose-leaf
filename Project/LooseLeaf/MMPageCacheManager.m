@@ -165,7 +165,7 @@ static MMPageCacheManager* _instance = nil;
 
 - (void)didUnloadStateForPage:(MMEditablePaperView*)page {
     @synchronized(stateLoadedPages) {
-        [stateLoadedPages removeObject:currentEditablePage];
+        [stateLoadedPages removeObject:page];
     }
     //    DebugLog(@"MMPageCacheManager did UNLOAD state for %@", page.uuid);
     if (page == currentlyTopPage || page == currentEditablePage) {
